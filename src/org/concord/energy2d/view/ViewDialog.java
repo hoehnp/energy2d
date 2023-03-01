@@ -234,6 +234,9 @@ class ViewDialog extends JDialog {
 		comboBox.addItem("None");
 		comboBox.addItem("Temperature");
 		comboBox.addItem("Thermal energy");
+		comboBox.addItem("Velocity x-component");
+		comboBox.addItem("Velocity y-component");
+		comboBox.addItem("Velocity magnitude");
 		comboBox.setSelectedIndex(view.getHeatMapType() - View2D.HEATMAP_NONE);
 		comboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {

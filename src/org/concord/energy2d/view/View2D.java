@@ -95,6 +95,9 @@ public class View2D extends JPanel implements PropertyChangeListener {
 	public final static byte HEATMAP_NONE = 0;
 	public final static byte HEATMAP_TEMPERATURE = 1;
 	public final static byte HEATMAP_THERMAL_ENERGY = 2;
+	public final static byte HEATMAP_X_VELOCITY = 3;
+	public final static byte HEATMAP_Y_VELOCITY = 4;
+	public final static byte HEATMAP_MAGNITUDE_VELOCITY = 5;
 
 	public final static byte RAINBOW = 0;
 	public final static byte IRON = 1;
@@ -136,6 +139,7 @@ public class View2D extends JPanel implements PropertyChangeListener {
 	private byte heatMapType = HEATMAP_TEMPERATURE;
 	private byte colorPaletteType = RAINBOW;
 	private float[][] distribution;
+	private float[][] magnitude;
 
 	private static Stroke thinStroke = new BasicStroke(1);
 	private static Stroke moderateStroke = new BasicStroke(2);
@@ -288,6 +292,15 @@ public class View2D extends JPanel implements PropertyChangeListener {
 			lightColor = new Color(255, 255, 255, 128);
 			break;
 		case HEATMAP_THERMAL_ENERGY:
+			lightColor = new Color(255, 255, 255, 128);
+			break;
+		case HEATMAP_X_VELOCITY:
+			lightColor = new Color(255, 255, 255, 128);
+			break;
+		case HEATMAP_Y_VELOCITY:
+			lightColor = new Color(255, 255, 255, 128);
+			break;
+		case HEATMAP_MAGNITUDE_VELOCITY:
 			lightColor = new Color(255, 255, 255, 128);
 			break;
 		}
@@ -850,6 +863,15 @@ public class View2D extends JPanel implements PropertyChangeListener {
 		case HEATMAP_THERMAL_ENERGY:
 			drawThermalEnergyField(g);
 			break;
+		case HEATMAP_X_VELOCITY:
+			drawXVelocityField(g);
+			break;
+		case HEATMAP_Y_VELOCITY:
+			drawYVelocityField(g);
+			break;
+		case HEATMAP_MAGNITUDE_VELOCITY:
+			drawMagnitudeVelocityField(g);
+			break;
 		}
 		drawParts(g);
 		if (isotherms != null) {
@@ -1275,6 +1297,30 @@ public class View2D extends JPanel implements PropertyChangeListener {
 	private void drawTemperatureField(Graphics2D g) {
 		temperatureRenderer.render(this, g, model.getTemperature());
 	}
+	
+	private void drawXVelocityField(Graphics2D g) {
+		temperatureRenderer.render(this, g, model.getXVelocity());
+	}
+	
+	private void drawYVelocityField(Graphics2D g) {
+		temperatureRenderer.render(this, g, model.getYVelocity());
+	}
+	
+	private void drawMagnitudeVelocityField(Graphics2D g) {
+		float[][] x_vel = model.getXVelocity();
+		float[][] y_vel = model.getYVelocity();
+		int nx = x_vel.length;
+		int ny = x_vel[0].length;
+		if (magnitude == null)
+			magnitude = new float[nx][ny];
+		for (int i = 0; i < nx; i++) {
+			for (int j = 0; j < ny; j++) {
+				magnitude[i][j] = (float) Math.sqrt(Math.pow(x_vel[i][j],2) + Math.pow(y_vel[i][j],2));
+			}
+		}
+		temperatureRenderer.render(this, g, magnitude);
+	}
+	
 
 	private void drawThermalEnergyField(Graphics2D g) {
 		float[][] density = model.getDensity();
